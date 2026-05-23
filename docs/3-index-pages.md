@@ -111,6 +111,18 @@ To override options for string or numeric filter pass `filters` option.
   filter :title, filters: [:start, :end]
 ```
 
+To change the default set or order of operators offered by `as: :string`
+filters across a whole namespace, set `string_input_filters` in the
+namespace configuration. Per-filter `filters:` still wins when set.
+
+```ruby
+ActiveAdmin.setup do |config|
+  config.namespace :admin do |admin|
+    admin.string_input_filters = [:eq, :cont]
+  end
+end
+```
+
 Also, if you don't need the select with the options 'cont', 'eq', 'start' or
 'end' just add the option to the filter name with an underscore.
 

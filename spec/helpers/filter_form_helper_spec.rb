@@ -121,6 +121,24 @@ RSpec.describe ActiveAdmin::FormHelper, type: :helper do
         end
       end
     end
+
+    context "with namespace-level string_input_filters" do
+      let(:body) do
+        admin = ActiveAdmin.application.namespace(:admin)
+        admin.string_input_filters = [:eq, :cont]
+        allow(helper).to receive(:active_admin_config).and_return(double(namespace: admin))
+        filter :title
+      ensure
+        admin.string_input_filters = nil
+      end
+
+      it "uses the namespace operators (subset and order) instead of the global default" do
+        expect(body).to have_css("option[value=title_eq]", text: "Equals")
+        expect(body).to have_css("option[value=title_cont]", text: "Contains")
+        expect(body).to have_no_css("option[value=title_start]")
+        expect(body).to have_no_css("option[value=title_end]")
+      end
+    end
   end
 
   describe "string attribute ended with ransack predicate" do
